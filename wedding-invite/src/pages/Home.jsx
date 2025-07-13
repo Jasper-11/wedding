@@ -1,4 +1,5 @@
 import React from 'react';
+import CountdownTimer from '../components/CountdownTimer';
 
 const Home = () => {
   return (
@@ -17,6 +18,9 @@ const Home = () => {
           <p className="hero-location">📍 Dương Gia Palace, Uông Bí City, Việt Nam</p>
         </div>
       </div>
+
+      {/* Countdown Timer */}
+      <CountdownTimer />
 
       {/* Our Story Section */}
       <div className="card our-story-card" style={{ maxWidth: 700, margin: '2rem auto', textAlign: 'center' }}>
