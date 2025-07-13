@@ -60,7 +60,8 @@ const RSVP = () => {
     if (Object.keys(newErrors).length === 0) {
       setSubmitting(true);
       try {
-        const response = await fetch('/api/rsvp', {
+        const API_URL = import.meta.env.VITE_API_URL || 'https://rsvplist.onrender.com';
+        const response = await fetch(`${API_URL}/api/rsvp`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

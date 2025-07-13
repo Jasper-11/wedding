@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const ADMIN_PASSWORD = 'wedding2025'; // Change this to your desired password
+const ADMIN_PASSWORD = 'admin123'; // Match the backend password
 
 function toCSV(rows) {
   if (!rows.length) return '';
@@ -19,9 +19,11 @@ const Admin = () => {
 
   useEffect(() => {
     if (authed) {
-      fetch('/users/rsvps')
+      const API_URL = import.meta.env.VITE_API_URL || 'https://rsvplist.onrender.com';
+      fetch(`${API_URL}/api/admin/rsvp?password=${ADMIN_PASSWORD}`)
         .then(res => res.json())
-        .then(data => setRsvps(data));
+        .then(data => setRsvps(data))
+        .catch(err => setError('Failed to load RSVPs'));
     }
   }, [authed]);
 
@@ -36,14 +38,8 @@ const Admin = () => {
   };
 
   const handleExport = () => {
-    const csv = toCSV(rsvps);
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'rsvps.csv';
-    a.click();
-    URL.revokeObjectURL(url);
+    const API_URL = import.meta.env.VITE_API_URL || 'https://rsvplist.onrender.com';
+    window.open(`${API_URL}/api/admin/export?password=${ADMIN_PASSWORD}`, '_blank');
   };
 
   return (
@@ -77,23 +73,23 @@ const Admin = () => {
               <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
                 <thead>
                   <tr>
-                    <th style={{ border: '1px solid #ccc', padding: '0.5rem' }}>First Name</th>
-                    <th style={{ border: '1px solid #ccc', padding: '0.5rem' }}>Last Name</th>
-                    <th style={{ border: '1px solid #ccc', padding: '0.5rem' }}>Attendance</th>
+                    <th style={{ border: '1px solid #ccc', padding: '0.5rem' }}>Name</th>
+                    <th style={{ border: '1px solid #ccc', padding: '0.5rem' }}>Attending</th>
+                    <th style={{ border: '1px solid #ccc', padding: '0.5rem' }}>Guests</th>
                     <th style={{ border: '1px solid #ccc', padding: '0.5rem' }}>Dietary</th>
-                    <th style={{ border: '1px solid #ccc', padding: '0.5rem' }}>Questions</th>
-                    <th style={{ border: '1px solid #ccc', padding: '0.5rem' }}>Submitted At</th>
+                    <th style={{ border: '1px solid #ccc', padding: '0.5rem' }}>Message</th>
+                    <th style={{ border: '1px solid #ccc', padding: '0.5rem' }}>Timestamp</th>
                   </tr>
                 </thead>
                 <tbody>
                   {rsvps.map((r, i) => (
                     <tr key={i}>
-                      <td style={{ border: '1px solid #ccc', padding: '0.5rem' }}>{r.firstName}</td>
-                      <td style={{ border: '1px solid #ccc', padding: '0.5rem' }}>{r.lastName}</td>
-                      <td style={{ border: '1px solid #ccc', padding: '0.5rem' }}>{r.attendance}</td>
-                      <td style={{ border: '1px solid #ccc', padding: '0.5rem' }}>{r.dietaryRestrictions}</td>
-                      <td style={{ border: '1px solid #ccc', padding: '0.5rem' }}>{r.questions}</td>
-                      <td style={{ border: '1px solid #ccc', padding: '0.5rem' }}>{r.submittedAt}</td>
+                      <td style={{ border: '1px solid #ccc', padding: '0.5rem' }}>{r.name}</td>
+                      <td style={{ border: '1px solid #ccc', padding: '0.5rem' }}>{r.attending ? 'Yes' : 'No'}</td>
+                      <td style={{ border: '1px solid #ccc', padding: '0.5rem' }}>{r.guests}</td>
+                      <td style={{ border: '1px solid #ccc', padding: '0.5rem' }}>{r.dietary}</td>
+                      <td style={{ border: '1px solid #ccc', padding: '0.5rem' }}>{r.message}</td>
+                      <td style={{ border: '1px solid #ccc', padding: '0.5rem' }}>{new Date(r.timestamp).toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>
