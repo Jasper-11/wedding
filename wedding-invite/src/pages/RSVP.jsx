@@ -1,36 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const guestList = [
+  'Wayne', 'Donetta', 'Nerida', 'Robert', 'Ashley',
+  'Alan', 'Scott', 'Daniel', 'Erik', 'Stef',
+  'Aaron', 'Elliot', 'Terry', 'Kasey', 'Brooke',
+  'Peter', 'Joe'
+];
+
 const RSVP = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
-    lastName: '',
     attendance: '',
     dietaryRestrictions: '',
-    questions: ''
+    questions: '',
+    plusOne: false,
+    plusOneName: ''
   });
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // Sample guest list - you can replace this with your actual guest list
-  const guestList = [
-    { firstName: 'John', lastName: 'Smith' },
-    { firstName: 'Jane', lastName: 'Doe' },
-    { firstName: 'Mike', lastName: 'Johnson' },
-    { firstName: 'Trang', lastName: 'Bui' },
-    { firstName: 'Jasper', lastName: 'Karlen' },
-    { firstName: 'David', lastName: 'Brown' },
-    { firstName: 'Emily', lastName: 'Davis' },
-    { firstName: 'Robert', lastName: 'Miller' },
-    { firstName: 'Lisa', lastName: 'Wilson' }
-  ];
-
-  const validateGuest = (firstName, lastName) => {
-    return guestList.some(guest => 
-      guest.firstName.toLowerCase() === firstName.toLowerCase() && 
-      guest.lastName.toLowerCase() === lastName.toLowerCase()
+  const validateGuest = (firstName) => {
+    return guestList.some(
+      guest => guest.trim().toLowerCase() === firstName.trim().toLowerCase()
     );
   };
 
@@ -42,20 +36,17 @@ const RSVP = () => {
     // Validate required fields
     if (!formData.firstName.trim()) {
       newErrors.firstName = 'First name is required';
-    }
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
+    } else if (!validateGuest(formData.firstName)) {
+      newErrors.firstName = 'Sorry, we could not find your name on our guest list.';
     }
     if (!formData.attendance) {
       newErrors.attendance = 'Please select your attendance';
     }
-
-    // Validate guest is on the list
-    if (formData.firstName && formData.lastName) {
-      if (!validateGuest(formData.firstName, formData.lastName)) {
-        newErrors.guest = 'Sorry, we could not find your name on our guest list. Please contact us if you believe this is an error.';
-      }
+    if (formData.plusOne && !formData.plusOneName.trim()) {
+      newErrors.plusOneName = 'Please enter your guest’s first name';
     }
+    // Prevent duplicate RSVP (client-side, best effort)
+    // (Server will enforce as well)
 
     if (Object.keys(newErrors).length === 0) {
       setSubmitting(true);
@@ -65,19 +56,21 @@ const RSVP = () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: `${formData.firstName} ${formData.lastName}`,
+            name: formData.firstName.trim(),
+            plusOne: formData.plusOne ? formData.plusOneName.trim() : '',
             attending: formData.attendance === 'yes',
-            guests: 1,
+            guests: formData.plusOne ? 2 : 1,
             dietary: formData.dietaryRestrictions,
             message: formData.questions
           })
         });
         if (response.ok) {
-          navigate('/confirmation', { 
-            state: { 
+          navigate('/confirmation', {
+            state: {
               attending: formData.attendance === 'yes',
-              name: `${formData.firstName} ${formData.lastName}`
-            } 
+              name: formData.firstName.trim(),
+              plusOne: formData.plusOne ? formData.plusOneName.trim() : ''
+            }
           });
         } else {
           setSubmitError('There was a problem submitting your RSVP. Please try again later.');
@@ -93,17 +86,13 @@ const RSVP = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
-    // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
@@ -113,11 +102,10 @@ const RSVP = () => {
         <h1>RSVP</h1>
         <p>Please respond by October 15, 2025</p>
       </div>
-
       <div className="card" style={{ maxWidth: 600, margin: '0 auto' }}>
         <form onSubmit={handleSubmit} className="rsvp-form">
           <div className="form-group">
-            <label htmlFor="firstName">First Name *</label>
+            <label htmlFor="firstName">Your First Name *</label>
             <input
               type="text"
               id="firstName"
@@ -126,29 +114,10 @@ const RSVP = () => {
               onChange={handleChange}
               className={errors.firstName ? 'error' : ''}
               disabled={submitting}
+              autoComplete="given-name"
             />
             {errors.firstName && <span className="error-message">{errors.firstName}</span>}
           </div>
-
-          <div className="form-group">
-            <label htmlFor="lastName">Last Name *</label>
-            <input
-              type="text"
-              id="lastName"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              className={errors.lastName ? 'error' : ''}
-              disabled={submitting}
-            />
-            {errors.lastName && <span className="error-message">{errors.lastName}</span>}
-          </div>
-
-          {errors.guest && (
-            <div className="error-message guest-error">
-              {errors.guest}
-            </div>
-          )}
 
           <div className="form-group">
             <label htmlFor="attendance">Will you attend? *</label>
@@ -170,18 +139,45 @@ const RSVP = () => {
           {formData.attendance === 'yes' && (
             <>
               <div className="form-group">
+                <label>
+                  <input
+                    type="checkbox"
+                    name="plusOne"
+                    checked={formData.plusOne}
+                    onChange={handleChange}
+                    disabled={submitting}
+                  />{' '}
+                  I will bring a +1
+                </label>
+              </div>
+              {formData.plusOne && (
+                <div className="form-group">
+                  <label htmlFor="plusOneName">+1 First Name *</label>
+                  <input
+                    type="text"
+                    id="plusOneName"
+                    name="plusOneName"
+                    value={formData.plusOneName}
+                    onChange={handleChange}
+                    className={errors.plusOneName ? 'error' : ''}
+                    disabled={submitting}
+                    autoComplete="off"
+                  />
+                  {errors.plusOneName && <span className="error-message">{errors.plusOneName}</span>}
+                </div>
+              )}
+              <div className="form-group">
                 <label htmlFor="dietaryRestrictions">Dietary Restrictions</label>
                 <textarea
                   id="dietaryRestrictions"
                   name="dietaryRestrictions"
                   value={formData.dietaryRestrictions}
                   onChange={handleChange}
-                  placeholder="Please let us know if you have any dietary restrictions or allergies..."
+                  placeholder="Please let us know if you or your +1 have any dietary restrictions or allergies..."
                   rows="3"
                   disabled={submitting}
                 />
               </div>
-
               <div className="form-group">
                 <label htmlFor="questions">Questions or Special Requests</label>
                 <textarea
@@ -204,7 +200,6 @@ const RSVP = () => {
           </button>
         </form>
       </div>
-
       <div className="card" style={{ maxWidth: 600, margin: '2rem auto', textAlign: 'center' }}>
         <h3>Need Help?</h3>
         <p>If you have any issues with your RSVP or need to make changes, please contact us:</p>
