@@ -1,10 +1,22 @@
 import React from 'react';
+import '../theme.css';
+
+const LotusSVG = () => (
+  <svg className="flower-corner" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g>
+      <path d="M60 110 Q70 90 90 100 Q80 80 100 80 Q80 70 110 60 Q90 60 100 40 Q80 50 80 30 Q70 50 60 10 Q50 50 40 30 Q40 50 20 40 Q30 60 10 60 Q30 70 20 80 Q40 80 30 100 Q50 90 60 110 Z"
+        fill="#FFD700" stroke="#B22222" strokeWidth="2"/>
+      <circle cx="60" cy="60" r="10" fill="#FFD700" stroke="#B22222" strokeWidth="2"/>
+    </g>
+  </svg>
+);
 
 const Schedule = () => (
-  <div className="schedule-page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-    <div className="page-header" style={{ textAlign: 'center', maxWidth: 700 }}>
-      <h1>Wedding Weekend Schedule</h1>
-      <p>All the key events for our celebration in Uông Bí, Việt Nam</p>
+  <div className="schedule-page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', background: 'var(--ivory)', position: 'relative' }}>
+    <div className="page-header" style={{ textAlign: 'center', maxWidth: 700, position: 'relative' }}>
+      <h1 style={{ color: 'var(--red)', fontFamily: 'var(--font-heading)' }}>Wedding Weekend Schedule</h1>
+      <p style={{ color: 'var(--red)', fontWeight: 600 }}>All the key events for our celebration in Uông Bí, Việt Nam</p>
+      <LotusSVG />
     </div>
     <div className="card" style={{ maxWidth: 700 }}>
       <h2>Saturday, November 1, 2025</h2>
