@@ -1,9 +1,21 @@
 import React from 'react';
 import CountdownTimer from '../components/CountdownTimer';
+import '../theme.css';
+
+// Vietnamese lotus SVG motif (gold)
+const LotusSVG = () => (
+  <svg className="flower-corner" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g>
+      <path d="M60 110 Q70 90 90 100 Q80 80 100 80 Q80 70 110 60 Q90 60 100 40 Q80 50 80 30 Q70 50 60 10 Q50 50 40 30 Q40 50 20 40 Q30 60 10 60 Q30 70 20 80 Q40 80 30 100 Q50 90 60 110 Z"
+        fill="#FFD700" stroke="#B22222" strokeWidth="2"/>
+      <circle cx="60" cy="60" r="10" fill="#FFD700" stroke="#B22222" strokeWidth="2"/>
+    </g>
+  </svg>
+);
 
 const Home = () => {
   return (
-    <div className="home-page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
+    <div className="home-page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', background: 'var(--ivory)' }}>
       {/* Hero Section */}
       <div className="hero-section" style={{ width: '100%', maxWidth: 700, textAlign: 'center' }}>
         <div className="hero-content">
@@ -17,6 +29,7 @@ const Home = () => {
           </div>
           <p className="hero-location">📍 Dương Gia Palace, Uông Bí City, Việt Nam</p>
         </div>
+        <LotusSVG />
       </div>
 
       {/* Countdown Timer */}
@@ -25,7 +38,7 @@ const Home = () => {
       {/* Our Story Section */}
       <div className="card our-story-card" style={{ maxWidth: 700, margin: '2rem auto', textAlign: 'center' }}>
         <h2>Our Story</h2>
-        <p style={{ fontWeight: 'bold', color: '#7b1fa2', fontSize: '1.2em' }}>
+        <p style={{ fontWeight: 'bold', color: 'var(--red)', fontSize: '1.2em' }}>
           Our story began in Melbourne in mid 2022, just as the world was opening back up. We both found ourselves in a new city, navigating fresh starts and newfound freedom after lockdowns. Somehow, we also found each other.
         </p>
         <img src="/couple-photo.jpg" alt="Jasper and Trang" style={{ maxWidth: '350px', display: 'block', margin: '2rem auto', borderRadius: '12px', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }} />

@@ -1,0 +1,108 @@
+:root {
+  --red: #8B0000;
+  --red-dark: #B22222;
+  --gold: #FFD700;
+  --gold-soft: #F9C846;
+  --ivory: #FFF8DC;
+  --cream: #F5F5DC;
+  --text-dark: #222;
+  --card-radius: 18px;
+  --shadow: 0 4px 24px rgba(139,0,0,0.08);
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Montserrat', Arial, sans-serif;
+}
+
+body {
+  background: var(--ivory);
+  color: var(--text-dark);
+  font-family: var(--font-body);
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-heading);
+  color: var(--red);
+  margin-top: 0;
+}
+
+.card {
+  background: var(--cream);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow);
+  border: 1.5px solid var(--gold);
+  padding: 2rem 2rem 1.5rem 2rem;
+  margin-bottom: 2rem;
+}
+
+.btn, button.btn {
+  background: var(--red);
+  color: var(--gold);
+  border: 2px solid var(--gold);
+  border-radius: 999px;
+  padding: 0.7em 2em;
+  font-family: var(--font-body);
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  box-shadow: 0 2px 8px rgba(139,0,0,0.08);
+}
+.btn:hover, button.btn:hover {
+  background: var(--gold);
+  color: var(--red);
+  border: 2px solid var(--red);
+}
+
+.hero-section {
+  background: linear-gradient(120deg, var(--red-dark) 60%, var(--gold) 100%);
+  color: var(--ivory);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow);
+  padding: 2.5rem 1.5rem 2rem 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero-title {
+  font-size: 2.5rem;
+  color: var(--gold);
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+.hero-subtitle {
+  font-size: 1.3rem;
+  color: var(--ivory);
+  margin-bottom: 1.2rem;
+}
+.hero-date {
+  font-size: 1.1rem;
+  color: var(--gold-soft);
+  margin-bottom: 0.7rem;
+}
+.hero-location {
+  color: var(--ivory);
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Vietnamese floral SVG motif as a background corner accent */
+.flower-corner {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 120px;
+  height: 120px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Responsive tweaks */
+@media (max-width: 700px) {
+  .card, .hero-section {
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
+  }
+  .hero-title {
+    font-size: 1.5rem;
+  }
+} 
