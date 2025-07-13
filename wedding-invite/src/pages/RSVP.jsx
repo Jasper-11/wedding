@@ -60,13 +60,24 @@ const RSVP = () => {
     if (Object.keys(newErrors).length === 0) {
       setSubmitting(true);
       try {
-        const response = await fetch('/users/rsvp', {
+        const response = await fetch('/api/rsvp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
+          body: JSON.stringify({
+            name: `${formData.firstName} ${formData.lastName}`,
+            attending: formData.attendance === 'yes',
+            guests: 1,
+            dietary: formData.dietaryRestrictions,
+            message: formData.questions
+          })
         });
         if (response.ok) {
-          navigate('/confirmation');
+          navigate('/confirmation', { 
+            state: { 
+              attending: formData.attendance === 'yes',
+              name: `${formData.firstName} ${formData.lastName}`
+            } 
+          });
         } else {
           setSubmitError('There was a problem submitting your RSVP. Please try again later.');
         }

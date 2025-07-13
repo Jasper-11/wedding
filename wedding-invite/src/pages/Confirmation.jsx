@@ -1,32 +1,39 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Confirmation = () => {
+  const location = useLocation();
+  const { attending, name } = location.state || { attending: true, name: 'Guest' };
+
   return (
     <div className="confirmation-page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
       <div className="page-header" style={{ textAlign: 'center', maxWidth: 600 }}>
-        <h1>Thank You!</h1>
+        <h1>Thank You, {name.split(' ')[0]}!</h1>
         <p>Your RSVP has been received</p>
       </div>
 
       <div className="card confirmation-card" style={{ maxWidth: 600, textAlign: 'center' }}>
-        <div className="confirmation-icon">✅</div>
-        <h2>We've Got Your Response!</h2>
+        <div className="confirmation-icon">{attending ? '✅' : '💝'}</div>
+        <h2>{attending ? 'We Can\'t Wait to See You!' : 'We\'ll Miss You!'}</h2>
         <p>
-          Thank you for taking the time to RSVP for our special day. 
-          We're excited to celebrate with you!
+          {attending 
+            ? `Thank you for confirming your attendance, ${name}! We're excited to celebrate our special day with you.`
+            : `Thank you for letting us know, ${name}. We understand and will miss you on our special day.`
+          }
         </p>
         
-        <div className="confirmation-details" style={{ textAlign: 'left', margin: '2rem 0' }}>
-          <h3>What's Next?</h3>
-          <ul>
-            <li>📧 You'll receive a confirmation email shortly</li>
-            <li>📅 Mark your calendar for November 2, 2025</li>
-            <li>📍 Venue: Dương Gia Palace, Uông Bí City, Việt Nam</li>
-            <li>⏰ Ceremony starts at 11:00 AM</li>
-            <li>🎉 Reception and party to follow</li>
-          </ul>
-        </div>
+        {attending && (
+          <div className="confirmation-details" style={{ textAlign: 'left', margin: '2rem 0' }}>
+            <h3>What's Next?</h3>
+            <ul>
+              <li>📧 You'll receive a confirmation email shortly</li>
+              <li>📅 Mark your calendar for November 2, 2025</li>
+              <li>📍 Venue: Dương Gia Palace, Uông Bí City, Việt Nam</li>
+              <li>⏰ Ceremony starts at 11:00 AM</li>
+              <li>🎉 Reception and party to follow</li>
+            </ul>
+          </div>
+        )}
 
         <div className="confirmation-actions" style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem', flexWrap: 'wrap' }}>
           <Link to="/" className="btn">Back to Home</Link>

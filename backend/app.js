@@ -12,9 +12,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
-
 // RSVP data file
 const RSVP_FILE = path.join(__dirname, 'rsvp-data.json');
 
@@ -112,9 +109,9 @@ app.get('/api/admin/export', (req, res) => {
   }
 });
 
-// Serve the main application
+// API-only backend - return 404 for non-API routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.status(404).json({ error: 'API endpoint not found' });
 });
 
 // Only start the server if this file is run directly
